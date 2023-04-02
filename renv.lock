@@ -82,6 +82,30 @@
       ],
       "Hash": "e749cae40fa9ef469b6050959517453c"
     },
+    "RcppArmadillo": {
+      "Package": "RcppArmadillo",
+      "Version": "0.12.0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "methods",
+        "stats",
+        "utils"
+      ],
+      "Hash": "dee7cfd76b4c78bab84e09b74b6d471f"
+    },
+    "RcppThread": {
+      "Package": "RcppThread",
+      "Version": "2.1.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "cfa585071a4d213d6cd1b1efab1e3150"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.1",
@@ -260,6 +284,16 @@
       ],
       "Hash": "3f038e5ac7f41d4ac41ce658c85e3042"
     },
+    "codetools": {
+      "Package": "codetools",
+      "Version": "0.2-19",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "c089a619a7fae175d149d89164f8c7d8"
+    },
     "colorspace": {
       "Package": "colorspace",
       "Version": "2.1-0",
@@ -376,6 +410,17 @@
       ],
       "Hash": "d24305b92db333726aed162a2c23a147"
     },
+    "decido": {
+      "Package": "decido",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp"
+      ],
+      "Hash": "671d3cba9fc5a7663386426d5b61d1c7"
+    },
     "desc": {
       "Package": "desc",
       "Version": "1.4.2",
@@ -449,6 +494,20 @@
         "utils"
       ],
       "Hash": "8b708f296afd9ae69f450f9640be8990"
+    },
+    "doParallel": {
+      "Package": "doParallel",
+      "Version": "1.0.17",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "foreach",
+        "iterators",
+        "parallel",
+        "utils"
+      ],
+      "Hash": "451e5edf411987991ab6a5410c45011f"
     },
     "downlit": {
       "Package": "downlit",
@@ -587,6 +646,19 @@
         "tibble"
       ],
       "Hash": "1a0a9a3d5083d0d573c4214576f1e690"
+    },
+    "foreach": {
+      "Package": "foreach",
+      "Version": "1.5.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "codetools",
+        "iterators",
+        "utils"
+      ],
+      "Hash": "618609b42c9406731ead03adf5379850"
     },
     "fs": {
       "Package": "fs",
@@ -763,6 +835,20 @@
       ],
       "Hash": "fd7b97bd862a14297b0bb7ed28a3dada"
     },
+    "gridExtra": {
+      "Package": "gridExtra",
+      "Version": "2.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "grDevices",
+        "graphics",
+        "grid",
+        "gtable",
+        "utils"
+      ],
+      "Hash": "7d7f283939f563670a697165b2cf5560"
+    },
     "gtable": {
       "Package": "gtable",
       "Version": "0.3.3",
@@ -933,6 +1019,27 @@
         "utils"
       ],
       "Hash": "0080607b4a1a7b28979aecef976d8bc2"
+    },
+    "iterators": {
+      "Package": "iterators",
+      "Version": "1.0.14",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "utils"
+      ],
+      "Hash": "8954069286b4b2b0d023d1b288dce978"
+    },
+    "jpeg": {
+      "Package": "jpeg",
+      "Version": "0.1-10",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "031a0b683d001a7519202f0628fc0358"
     },
     "jquerylib": {
       "Package": "jquerylib",
@@ -1242,6 +1349,16 @@
       ],
       "Hash": "6b0c222c5071efe0f3baf3dae9aa40e2"
     },
+    "png": {
+      "Package": "png",
+      "Version": "0.1-8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "bd54ba8a0a5faded999a7aab6e46b374"
+    },
     "praise": {
       "Package": "praise",
       "Version": "1.0.0",
@@ -1355,6 +1472,128 @@
         "R"
       ],
       "Hash": "5e3c5dc0b071b21fa128676560dbe94d"
+    },
+    "raster": {
+      "Package": "raster",
+      "Version": "3.6-20",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "methods",
+        "sp",
+        "terra"
+      ],
+      "Hash": "ebebd9f0f203a129eb2da96470191b82"
+    },
+    "rayimage": {
+      "Package": "rayimage",
+      "Version": "0.9.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rayimage",
+      "RemoteUsername": "tylermorganwall",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "0d24441243d6fb53fb62f6796a3ae4229bca72c8",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppArmadillo",
+        "grDevices",
+        "grid",
+        "gridExtra",
+        "jpeg",
+        "png",
+        "progress"
+      ],
+      "Hash": "dd387b5b2db683bac7728bc0033cdb5b"
+    },
+    "rayrender": {
+      "Package": "rayrender",
+      "Version": "0.29.5",
+      "Source": "GitHub",
+      "Remotes": "tylermorganwall/rayimage",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rayrender",
+      "RemoteUsername": "tylermorganwall",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "2da2f5b14da79816026d30151c1f1c98d9f3b09b",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppThread",
+        "decido",
+        "magrittr",
+        "parallel",
+        "png",
+        "progress",
+        "purrr",
+        "raster",
+        "rayimage",
+        "spacefillr",
+        "stats"
+      ],
+      "Hash": "3cea36e06693316c47cd200cdb60d2ef"
+    },
+    "rayshader": {
+      "Package": "rayshader",
+      "Version": "0.35.1",
+      "Source": "GitHub",
+      "Remotes": "tylermorganwall/rayimage, tylermorganwall/rayrender, tylermorganwall/rayvertex, dmurdoch/rgl",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rayshader",
+      "RemoteUsername": "tylermorganwall",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "6332d91a9ba38a5cc29d5ee920eb7574fe4e5141",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppArmadillo",
+        "doParallel",
+        "foreach",
+        "grDevices",
+        "grid",
+        "jpeg",
+        "magrittr",
+        "methods",
+        "png",
+        "progress",
+        "raster",
+        "rayimage",
+        "rayrender",
+        "rayvertex",
+        "rgl",
+        "scales",
+        "terrainmeshr",
+        "utils"
+      ],
+      "Hash": "f0e925dbd2d1ee0eaf15fb853b59a822"
+    },
+    "rayvertex": {
+      "Package": "rayvertex",
+      "Version": "0.7.6",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rayvertex",
+      "RemoteUsername": "tylermorganwall",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "197ce825f5246b4aa3c70907875eca225f99f7f0",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppThread",
+        "digest",
+        "grDevices",
+        "png",
+        "rayimage",
+        "spacefillr"
+      ],
+      "Hash": "940dfca6b62e9606eb8aa15e6aff8bbc"
     },
     "rcmdcheck": {
       "Package": "rcmdcheck",
@@ -1478,6 +1717,33 @@
         "withr"
       ],
       "Hash": "d66fe009d4c20b7ab1927eb405db9ee2"
+    },
+    "rgl": {
+      "Package": "rgl",
+      "Version": "1.1.6",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rgl",
+      "RemoteUsername": "dmurdoch",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "56d1c222d83592d9f0f840c69421fc30fcfcc3b0",
+      "Requirements": [
+        "R",
+        "R6",
+        "base64enc",
+        "grDevices",
+        "graphics",
+        "htmltools",
+        "htmlwidgets",
+        "jsonlite",
+        "knitr",
+        "magrittr",
+        "mime",
+        "stats",
+        "utils"
+      ],
+      "Hash": "c7e170461c2dc20954e63aa150347fd2"
     },
     "rlang": {
       "Package": "rlang",
@@ -1691,6 +1957,33 @@
       ],
       "Hash": "5f5a7629f956619d519205ec475fe647"
     },
+    "sp": {
+      "Package": "sp",
+      "Version": "1.6-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "grDevices",
+        "graphics",
+        "grid",
+        "lattice",
+        "methods",
+        "stats",
+        "utils"
+      ],
+      "Hash": "6674e075a078d9c3bde8ba800367347c"
+    },
+    "spacefillr": {
+      "Package": "spacefillr",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp"
+      ],
+      "Hash": "30850588bdc225885f2417fb1e7c8ee3"
+    },
     "stringi": {
       "Package": "stringi",
       "Version": "1.7.12",
@@ -1738,6 +2031,28 @@
         "cpp11"
       ],
       "Hash": "90b28393209827327de889f49935140a"
+    },
+    "terra": {
+      "Package": "terra",
+      "Version": "1.7-18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "methods"
+      ],
+      "Hash": "5db3d690ad42a1828d3bf9e063c98587"
+    },
+    "terrainmeshr": {
+      "Package": "terrainmeshr",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp"
+      ],
+      "Hash": "f0dc9be31d757b475dbbdaf320703685"
     },
     "testthat": {
       "Package": "testthat",
