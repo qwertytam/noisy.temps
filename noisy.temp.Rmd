@@ -1,4 +1,4 @@
----
+c---
 title: "Noisy Temperatures"
 output: html_notebook
 ---
@@ -8,7 +8,7 @@ output: html_notebook
 ```{r}
 # install.packages("tidyverse")
 # install.packages("moments")
-# install.packages("devtolls")
+# install.packages("devtools")
 # devtools::install_github("bbc/bbplot")
 ```
 
