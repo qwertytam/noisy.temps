@@ -1,0 +1,323 @@
+---
+title: "Noisy Temperatures"
+output: html_notebook
+---
+
+### Set up environment
+
+```{r}
+# install.packages("tidyverse")
+# install.packages("moments")
+# install.packages("devtolls")
+# devtools::install_github("bbc/bbplot")
+```
+
+
+```{r}
+library(tidyverse)
+library(moments)
+library(bbplot)
+
+windowsFonts(Helvetica = "TT Arial") # for bbplot font compatability
+```
+
+### Function Definitions
+#### calculation of yearly data
+```{r calc_yearly_data fn}
+start_yr <- 1800
+end_yr <- 2100
+
+calc_yearly_data <- function(monthly_data){
+  
+  # Count number of observations per year
+  num_obs_yr <- monthly_data %>%
+    mutate(Year = format(ymd(Date), "%Y")) %>%
+    group_by(Year) %>%
+    summarise(num_obs = n())
+  
+  # Drop years that don't have 12 months
+  months_per_year <- 12
+  drop_yrs <- num_obs_yr %>% filter(num_obs != months_per_year)
+  
+  # Calculate the yearly average
+  yearly_data <- monthly_data %>%
+    mutate(Year = format(ymd(Date), "%Y")) %>%
+    filter(!Year %in% drop_yrs) %>%
+    group_by(Year) %>%
+    summarise(temp = mean(temp)) %>%
+    mutate(Year = as.integer(Year)) %>%
+    filter(Year >= start_yr) %>%
+    filter(Year <= end_yr)
+  
+  # Ensure in ascending order for time series analysis
+  yearly_data <- arrange(yearly_data, Year)
+  
+  return(yearly_data)
+}
+```
+
+#### Printing runs test results
+```{r print_runstest fn}
+print_runstest <- function(rt_result, rt_data){
+
+    rt_data_rmna <- rt_data[!is.na(rt_data)]
+  
+  num_obvs_runs <- paste("Number of obversations:", rt_result[["parameter"]][["n"]])
+  mean_obvs <- paste("Mean of the obversations:", format(mean(rt_data_rmna), digits=5))
+  num_runs <- paste("Number of runs:", rt_result[["parameter"]][["runs"]])
+  num_runs_abv <- paste("Number of runs above mean:", rt_result[["parameter"]][["n1"]])
+  num_runs_blw <- paste("Number of runs below mean:", rt_result[["parameter"]][["n2"]])
+  mn_runs <- paste("Mean value of stat test E(R):", format(rt_result[["mu"]], digits=3))
+  sd_runs <- paste("Std. Dev. of the stat test StdDev(R):", format(sqrt(rt_result[["var"]]), digits=5))
+  stat_runs <- paste("Normalized value of the stat test Z-Value:",
+                     format(rt_result[["statistic"]][["statistic"]], digits=5))
+  pv_runs <- paste("p-value of the stat test:", format(rt_result[["p.value"]], digits=5))
+  
+  writeLines(
+    c(num_obvs_runs,
+      num_runs_blw,
+      num_runs_abv,
+      num_runs,
+      mean_obvs,
+      mn_runs,
+      sd_runs,
+      stat_runs,
+      pv_runs))
+}
+```
+
+#### Printing t-test results
+```{r print_ttest fn}
+print_ttest <- function(tt_result, tt_data){
+
+  tt_data_rmna <- tt_data[!is.na(tt_data)]
+
+  sample_size_tt <- paste("Sample size:", length(tt_data_rmna))
+  sample_mn_tt <- paste("Sample mean:", format(mean(tt_data_rmna), digits=3))
+  sample_sd_tt <- paste("Sample Std Dev:", format(sd(tt_data_rmna), digits=3))
+  
+  hyp_mn_tt <- paste("Hypothesized mean:", tt_result[["null.value"]][["mean"]])
+  alt_hyp_tt <- paste("Alternative hypothesis:", tt_result[["alternative"]])
+  std_err_mn_tt <- paste("Standard error of mean:", format(tt_result[["stderr"]], digits=3))
+  df_tt <- paste("Degrees of freedom:", tt_result[["parameter"]][["df"]])
+  stat_tt <- paste("t-test statistic:", format(tt_result[["statistic"]][["t"]], digits=3))
+  pv_tt <- paste("p-value of the stat test:", format(tt_result[["p.value"]], digits=3))
+  
+  writeLines(
+    c(sample_size_tt,
+        sample_mn_tt,
+        sample_sd_tt,
+        hyp_mn_tt,
+        alt_hyp_tt,
+        std_err_mn_tt,
+        df_tt,
+        stat_tt,
+        pv_tt))
+}
+```
+
+
+### Gather data
+#### Met Office Data
+```{r download data}
+fp <- "data"
+fn <- "HadCRUT.5.0.1.0.analysis.summary_series.global.monthly.csv"
+url <- paste(
+  "https://www.metoffice.gov.uk/hadobs/hadcrut5/data/current/analysis/diagnostics/",
+  fn, sep="")
+
+download.file(url, file.path(fp, fn))
+```
+
+
+```{r read in data}
+dfm_met <- file.path(fp, fn) %>%
+  read_csv(col_types=list(col_date("%Y-%m"), col_number())) %>%
+  select(1:2) %>%
+  rename(Date = Time) %>%
+  rename(temp = starts_with("Ano"))
+
+dfy_met <- calc_yearly_data(dfm_met)
+```
+
+#### NASA data
+```{r}
+fn <- "GLB.Ts+dSST.csv"
+url <- paste(
+  "https://data.giss.nasa.gov/gistemp/tabledata_v4/",
+  fn, sep="")
+
+download.file(url, file.path(fp, fn))
+
+```
+```{r}
+dfy_nasa <- file.path(fp, fn) %>%
+  read_csv(skip=1, col_select = c("Year", "J-D"), col_types=list(col_number(), col_character())) %>%
+  rename(temp = "J-D") %>%
+  filter(temp != "***") %>%
+  mutate(temp = as.numeric(temp)) %>%
+  arrange(Year) %>%
+  filter(Year >= start_yr) %>%
+  filter(Year <= end_yr)
+```
+
+### Data analysis
+#### Simple line plot of the data
+```{r}
+dfy <- bind_rows(list(met = dfy_met, nasa = dfy_nasa), .id="id")
+
+p <- ggplot(dfy, aes(Year, temp)) +
+  geom_line() +
+  facet_grid(cols=vars(id)) +
+  # Title
+  labs(title = "Historical Temperature Anomalies") +
+  # Axis
+  scale_y_continuous(labels = function(y) paste0(y, " deg C")) +
+  # Style
+  bbc_style() +
+  theme(plot.title = element_text(color = "#063376"))
+
+finalise_plot(p, source_name = "Source: Met Office, NASA", 
+              save_filepath = "imgs/temps.png",
+              width_pixels = 1200, height_pixels = 800)
+```
+
+#### Fitting of Holt-Winters on annual data
+Construct time series
+```{r}
+ts_met <- ts(dfy_met$temp, start=min(dfy_met$Year), frequency = 1)
+ts_nasa <- ts(dfy_nasa$temp, start=min(dfy_nasa$Year), frequency = 1)
+```
+
+Create model and prediction
+```{r}
+m_met <- HoltWinters(ts_met, gamma=FALSE)
+p_met <- predict(m_met, 13)
+
+m_nasa <- HoltWinters(ts_nasa, gamma=FALSE)
+p_nasa <- predict(m_nasa, 13)
+```
+
+
+Plot results
+```{r}
+plot(m_met, p_met)
+plot(m_nasa, p_nasa)
+```
+
+Trend is:
+```{r}
+str_out <- paste("Temperature trend for Met Office data is:",
+                 format(m_met[["coefficients"]][["b"]], digits=2),
+                 "deg C")
+noquote(str_out)
+
+str_out <- paste("Temperature trend for NASA data is:",
+                 format(m_nasa[["coefficients"]][["b"]], digits=2),
+                 "deg C")
+noquote(str_out)
+```
+Interpretation: Both positive trends, with NASA being greater than Met Office
+
+Runs test on model residuals:
+```{r}
+rt_met <- randtests::runs.test(residuals(m_met), alternative="two.sided", plot=TRUE)
+rt_nasa <- randtests::runs.test(residuals(m_nasa), alternative="two.sided", plot=TRUE)
+```
+
+```{r}
+noquote("Met Office runs tests:")
+print_runstest(rt_met, residuals(m_met))
+
+writeLines(c("", ""))
+
+noquote("NASA runs tests:")
+print_runstest(rt_nasa, residuals(m_nasa))
+```
+Interpretation: P-value is > 0.05, so cannot reject randomness, suggesting we have a valid model for both Met Office and NASA data
+
+#### Looking at the trends: Are the annual changes statistically significant?
+Add delta to previous year
+```{r}
+dfy_met <- dfy_met %>%
+  mutate(temp_prev = lag(temp),
+         temp_delta = temp - temp_prev,
+         temp_prev = NULL)
+
+dfy_nasa <- dfy_nasa %>%
+  mutate(temp_prev = lag(temp),
+         temp_delta = temp - temp_prev,
+         temp_prev = NULL)
+```
+
+Running a one-sided t-test to see if trend is statistically significant positive
+```{r}
+tt_met <- t.test(dfy_met$temp_delta, alternative="greater")
+
+tt_nasa <- t.test(dfy_nasa$temp_delta, alternative="greater")
+```
+
+Printing the results
+```{r}
+noquote("Met Office t-test:")
+print_ttest(tt_met, dfy_met$temp_delta)
+
+writeLines(c("", ""))
+
+noquote("NASA t-test:")
+print_ttest(tt_nasa, dfy_nasa$temp_delta)
+```
+Interpretation: P-value is > 0.05, so cannot reject randomness, suggesting we have a random walk for the annual temperature increases for both the Met Office and NASA data
+
+Doing a runs test on the temperature delta data
+```{r}
+rt_met_td <- randtests::runs.test(dfy_met$temp_delta, alternative="two.sided", plot=TRUE)
+rt_nasa_td <- randtests::runs.test(dfy_nasa$temp_delta, alternative="two.sided", plot=TRUE)
+```
+
+```{r}
+noquote("Met Office runs tests:")
+print_runstest(rt_met_td, dfy_met$temp_delta)
+
+writeLines(c("", ""))
+
+noquote("NASA runs tests:")
+print_runstest(rt_nasa_td, dfy_nasa$temp_delta)
+```
+In both cases, the number of runs is greater than E(R), implies that there is a negative auto-correlation, i.e. warming in one year is followed by cooling in the next year.
+
+P-value of the Met Office data is >0.05 implying randomness, but the NASA data is <0.05 implying non-randomness!
+```{r}
+acf_met <- acf(dfy_met$temp_delta[!is.na(dfy_met$temp_delta)])
+acf_nasa <- acf(dfy_nasa$temp_delta[!is.na(dfy_nasa$temp_delta)])
+```
+The auto-correlation charts confirm the negative auto-correlation
+
+```{r}
+dfy_rmna <- bind_rows(list(met = dfy_met, nasa = dfy_nasa), .id="id")
+dfy_rmna <- filter(dfy_rmna, !is.na(temp_delta))
+
+
+p <- ggplot(dfy_rmna, aes(temp_delta)) +
+  geom_histogram(bins=10) +
+  facet_grid(cols=vars(id)) +
+  # Title
+  labs(title = "Annual Changes in Temperature Histogram") +
+  # Axis
+  scale_x_continuous(labels = function(y) paste0(y, " deg C")) +
+  # Style
+  bbc_style() +
+  theme(plot.title = element_text(color = "#063376"))
+
+finalise_plot(p, source_name = "Source: Met Office, NASA", 
+              save_filepath = "imgs/temps_hist.png",
+              width_pixels = 1200, height_pixels = 800)
+
+
+```
+
+```{r}
+skewness(dfy_met$temp_delta[!is.na(dfy_met$temp_delta)])  
+skewness(dfy_nasa$temp_delta[!is.na(dfy_nasa$temp_delta)])  
+```
+Both negative, indicating the distributions are left-skewed
