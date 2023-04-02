@@ -1470,6 +1470,13 @@
       ],
       "Hash": "690bc058ea2b1b8a407d3cfe3dce3ef9"
     },
+    "randtests": {
+      "Package": "randtests",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "533f80fb294548c3b5acb815d8efc2cd"
+    },
     "rappdirs": {
       "Package": "rappdirs",
       "Version": "0.3.3",
