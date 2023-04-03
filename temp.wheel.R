@@ -162,30 +162,33 @@ p <- df_temps_plt %>% ggplot() +
     axis.text.x = element_blank(),
     axis.text.y = element_blank(),
     axis.ticks = element_blank(),
-    axis.line = element_line(colour = white_transp),
-    text = element_text(family = "Helvetica"))
+    axis.line = element_line(colour = white_transp))
 
 p
 
 plot_gg(p,
         # plot_gg args
-        width = 4, height = 4, scale = 300,
+        width = 6, height = 6, scale = 300,
+        # shadowdepth = 0,
+        # shadowcolor = "white",
         multicore = TRUE,
         raytrace = TRUE,
-        sunangle = 0,
+        sunangle = 180,
+        anglebreaks = seq(30, 80, 0.1),
         triangulate = FALSE,
         # plot_3d args
-        baseshape = "circle",
-        solid = FALSE,
-        # solidcolor = white_transp,
-        # solidlinecolor = white_transp,
-        # water = TRUE,
-        # waterdepth = 0.1,
-        # wateralpha = 0.7,
-        theta = 135,
-        phi = 30,
+        # baseshape = "circle",
+        # solid = TRUE,
+        # solidcolor = "white",
+        # solidlinecolor = "white",
+        # water = FALSE,
+        # waterdepth = 0.01,
+        # watercolor = "white",
+        # wateralpha = 0.99,
+        theta = 90,
+        phi = 45,
         zoom = 0.6,
-        windowsize = 600)
+        windowsize = 800)
 
 Sys.sleep(0.2)
 render_snapshot(clear = TRUE)
