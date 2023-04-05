@@ -4,12 +4,15 @@
 # renv::init()
 # renv::install("tidyverse")
 # renv::install("devtools")
+# renv::install("extrafont")
 # devtools::install_github("tylermorganwall/rayshader")
+
 
 ### Load libraries
 library(tidyverse)
 library(usethis)
 library(devtools)
+library(extrafont)
 library(rayshader)
 
 
@@ -131,7 +134,7 @@ df_temps <- file.path(fp, fn) %>%
 # Calculate temperature height matrix
 base_rad <- 100
 base_rad_w <- 20
-scaler <- 9 #9.99
+scaler <- 0.5 #9.99
 mat_temps <- create_mat(base_rad * scaler,
                    (base_rad - base_rad_w) * scaler,
                    df_temps$temp)
@@ -149,51 +152,111 @@ white_transp <- scales::alpha("white", 0)
 p <- df_temps_plt %>% ggplot() +
   geom_tile(aes(x = X, y = Y, fill = Z), show.legend = FALSE) +
   # Scales
-  scale_x_continuous("X", expand = c(0, 0), labels=NULL) +
-  scale_y_continuous("Y", expand = c(0, 0), labels=NULL) +
+  scale_x_continuous(expand = expansion(mult = 0.1, add = 0), labels=NULL) +
+  scale_y_continuous(expand = expansion(mult = 0.1, add = 0), labels=NULL) +
   scale_fill_gradientn("Z",
                        colors = tw_cs,
                        guide="none",
-                       na.value=white_transp) +
+                       na.value="white",
+                       ) +
   coord_fixed() +
   # Styling
-  theme_classic() +
   theme(
     axis.text.x = element_blank(),
     axis.text.y = element_blank(),
     axis.ticks = element_blank(),
-    axis.line = element_line(colour = white_transp))
+    axis.line = element_line(colour = "white"),
+    panel.background=element_blank(),
+    panel.grid.major=element_blank(),
+    panel.grid.minor=element_blank()
+    ) +
+  xlab(element_blank()) +
+  ylab(element_blank())
 
 p
 
-plot_gg(p,
+hm <- plot_gg(p,
         # plot_gg args
-        width = 6, height = 6, scale = 300,
+        # width = 6, height = 6, scale = 300,
+        shadow = FALSE,
         # shadowdepth = 0,
-        # shadowcolor = "white",
+        # shadowcolor = "greenwhite",
         multicore = TRUE,
+        lambert = TRUE,
         raytrace = TRUE,
+        triangulate = TRUE,
         sunangle = 180,
-        anglebreaks = seq(30, 80, 0.1),
-        triangulate = FALSE,
+        anglebreaks = seq(30, 65, 0.1),
+        # triangulate = FALSE,
+        save_height_matrix = TRUE,
         # plot_3d args
         # baseshape = "circle",
-        # solid = TRUE,
+        solid = FALSE,
         # solidcolor = "white",
         # solidlinecolor = "white",
-        # water = FALSE,
+        water = FALSE,
         # waterdepth = 0.01,
-        # watercolor = "white",
+        # watercolor = "green",
         # wateralpha = 0.99,
         theta = 90,
         phi = 45,
         zoom = 0.6,
-        windowsize = 800)
+        windowsize = 600)
+
+render_label(hm,
+             text = "Santa Cruz2",
+             x = 450, y = 450,
+             # extent = c(0, dim(mat_temps)[1], 0, dim(mat_temps)[1]),
+             altitude=100,
+             # zscale=50,
+             freetype = FALSE,
+             family="Georgia",
+             textalpha = 0.5,
+             clear_previous = TRUE,
+             relativez = FALSE,
+             textcolor = "black",
+            )
 
 Sys.sleep(0.2)
 render_snapshot(clear = TRUE)
 
+# For MacOS, see if X11 is available
+x11()
+
+# Fonts available with extrafont
+# Vector of font family names
+extrafont::fonts()
+
+# Show entire table
+extrafont::fonttable()
+
+# Import available fonts
+extrafont::font_import()
+
+# See list of available 3d fonts
+rgl::par3d()
+names(X11Fonts())
 
 
+# Try installing fonts
+# install.packages("rgl", type="source")
 
+# First using rglFonts
+rgl::rglFonts(belltopo = c(
+  system.file("fonts/BellTopoSans-Regular.otf", package = "rgl"),
+  system.file("fonts/BellTopoSans-Bold.otf", package = "rgl"),
+  system.file("fonts/BellTopoSans-Italic.otf", package = "rgl"),
+  system.file("fonts/BellTopoSans-BoldItalic.otf", package = "rgl")))
+
+# And try using rglExtrafonts
+newfamily <- rgl::rglExtrafonts(newsans = c("Comic Sans MS", "Impact", 
+                                       "Verdana", "Tahoma"))
+
+# Test fonts
+rgl::open3d()
+rgl::text3d(1,1,1, "Default", family = "sans", cex = 2)  
+newfamily <- rgl::rglExtrafonts(newsans = c("Comic Sans MS", "Impact", 
+                                       "Verdana", "Tahoma"))
+
+rgl::text3d(2,2,2, newfamily, family = "newsans", cex = 2)
 
